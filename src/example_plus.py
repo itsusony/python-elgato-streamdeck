@@ -18,24 +18,19 @@ from StreamDeck.Devices.StreamDeck import DialEventType, TouchscreenEventType
 # Folder location of image assets used by this example.
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "Assets")
 
-# image for idle state
-img = Image.new('RGB', (120, 120), color='black')
-released_icon = Image.open(os.path.join(ASSETS_PATH, 'Released.png')).resize((80, 80))
-img.paste(released_icon, (20, 20), released_icon)
+def get_bytes_from_image(image_path):
+    img = Image.new('RGB', (120,120), color='black')
+    icon = Image.open(image_path).resize((80, 80))
+    img.paste(icon, (20, 20), icon)
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format='JPEG')
+    return icon, img_byte_arr.getvalue()
 
-img_byte_arr = io.BytesIO()
-img.save(img_byte_arr, format='JPEG')
-img_released_bytes = img_byte_arr.getvalue()
+# image for idle state
+released_icon, img_released_bytes = get_bytes_from_image(os.path.join(ASSETS_PATH, 'Released.png'))
 
 # image for pressed state
-img = Image.new('RGB', (120, 120), color='black')
-pressed_icon = Image.open(os.path.join(ASSETS_PATH, 'Pressed.png')).resize((80, 80))
-img.paste(pressed_icon, (20, 20), pressed_icon)
-
-img_byte_arr = io.BytesIO()
-img.save(img_byte_arr, format='JPEG')
-img_pressed_bytes = img_byte_arr.getvalue()
-
+pressed_icon, img_pressed_bytes = get_bytes_from_image(os.path.join(ASSETS_PATH, 'Pressed.png'))
 
 # callback when buttons are pressed or released
 def key_change_callback(deck, key, key_state):
